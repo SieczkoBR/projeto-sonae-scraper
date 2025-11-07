@@ -2,6 +2,8 @@ import docx
 import sqlite3
 import os
 
+# PostGreen MySLQ (Elefante) - Na nuvem do render
+
 CAMINHO_ARQUIVO_WORD = "data/relatorio_crm.docx" # Verifique se este arquivo tem a nova estrutura!
 CAMINHO_BANCO = "data/projetos_sonae.db"
 
