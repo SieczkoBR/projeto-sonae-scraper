@@ -42,7 +42,7 @@ def gerar_insights():
             SELECT id, nome_projeto, resumo_executivo, principais_desafios 
             FROM projetos 
             WHERE resumo_ia IS NULL 
-              AND (resumo_executivo IS NOT NULL OR principais_desafios IS NOT NULL)
+            AND (resumo_executivo IS NOT NULL OR principais_desafios IS NOT NULL)
         """)
         
         projetos_para_processar = cursor.fetchall()

@@ -72,8 +72,38 @@ st.markdown("""
         background: linear-gradient(180deg, #1e3a8a 0%, #3b82f6 100%);
     }
     
-    [data-testid="stSidebar"] * {
+    /* Texto da sidebar em branco */
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3,
+    [data-testid="stSidebar"] p {
         color: white !important;
+    }
+    
+    /* Campos de input com fundo branco e texto escuro */
+    [data-testid="stSidebar"] .stSelectbox > div > div,
+    [data-testid="stSidebar"] input {
+        background-color: white !important;
+        color: #262730 !important;
+    }
+    
+    /* Botão na sidebar */
+    [data-testid="stSidebar"] button {
+        background-color: white !important;
+        color: #1e3a8a !important;
+        border: 2px solid white !important;
+        font-weight: bold !important;
+    }
+    
+    [data-testid="stSidebar"] button p,
+    [data-testid="stSidebar"] button div,
+    [data-testid="stSidebar"] button span {
+        color: #1e3a8a !important;
+    }
+    
+    [data-testid="stSidebar"] button:hover {
+        background-color: #f0f2f6 !important;
     }
     </style>
 """, unsafe_allow_html=True)
