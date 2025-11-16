@@ -215,7 +215,7 @@ with st.sidebar:
     
     pagina = st.radio(
         "Escolha uma página:",
-        ["📊 Dashboard Geral", "📋 Lista de Projetos", "🔍 Detalhes do Projeto", "🤖 Insights de IA"]
+        ["📊 Dashboard Geral", "📋 Lista de Projetos", "🔍 Detalhes do Projeto", "🤖 Insights de IA", "📄 Criar Resumo Personalizado"]
     )
     
     st.divider()
@@ -476,6 +476,278 @@ elif pagina == "🤖 Insights de IA":
                         icone, cor, texto = get_status_info(projeto['status'])
                         st.markdown(f"**Status:** {icone} {texto}")
                         st.markdown(f"**Responsável:** {projeto.get('responsavel', 'N/A')}")
+
+# --- PÁGINA 5: CRIAR RESUMO PERSONALIZADO ---
+elif pagina == "📄 Criar Resumo Personalizado":
+    st.title("📄 Criar Resumo Personalizado de Arquivo")
+    st.markdown("Faça upload de um arquivo e nossa IA criará um resumo personalizado para você")
+    
+    # Container principal
+    st.info("ℹ️ Esta funcionalidade permite que você faça upload de arquivos (PDF, Word, Excel) e obtenha resumos personalizados gerados por IA.")
+    
+    # Seção de upload de arquivo
+    st.subheader("📤 1. Selecione o Arquivo")
+    uploaded_file = st.file_uploader(
+        "Escolha um arquivo para resumir",
+        type=['pdf', 'docx', 'doc', 'xlsx', 'xls'],
+        help="Formatos aceitos: PDF, Word (.docx, .doc) e Excel (.xlsx, .xls)"
+    )
+    
+    # Seção de personalização
+    st.subheader("✨ 2. Personalize o Resumo (Opcional)")
+    
+    col1, col2 = st.columns([2, 1])
+    
+    with col1:
+        prompt_personalizado = st.text_area(
+            "Adicione instruções específicas para o resumo",
+            placeholder="Exemplo: Foque nos principais riscos e oportunidades do projeto, destacando prazos críticos...",
+            height=150,
+            help="Descreva o que você quer que seja destacado no resumo"
+        )
+    
+    with col2:
+        st.markdown("**💡 Dicas de personalização:**")
+        st.markdown("""
+        - Especifique tópicos de interesse
+        - Defina o nível de detalhe
+        - Mencione áreas específicas
+        - Indique prioridades
+        """)
+        
+        # Opções adicionais
+        tamanho_resumo = st.select_slider(
+            "Tamanho do resumo",
+            options=["Muito Curto", "Curto", "Médio", "Longo", "Detalhado"],
+            value="Médio"
+        )
+        
+        incluir_insights = st.checkbox("Incluir insights adicionais", value=True)
+        incluir_alertas = st.checkbox("Destacar pontos críticos", value=True)
+    
+    st.divider()
+    
+    # Botão de processar
+    col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
+    with col_btn2:
+        processar = st.button("🚀 Gerar Resumo Personalizado", type="primary", use_container_width=True)
+    
+    # Processamento (frontend mockup)
+    if processar:
+        if not uploaded_file:
+            st.error("❌ Por favor, selecione um arquivo primeiro!")
+        else:
+            # Simulação de processamento
+            with st.spinner("🔄 Processando arquivo e gerando resumo..."):
+                import time
+                
+                # Barra de progresso com etapas
+                progress_bar = st.progress(0)
+                status_text = st.empty()
+                
+                # Etapa 1: Upload
+                status_text.text("📤 Fazendo upload do arquivo...")
+                time.sleep(0.5)
+                progress_bar.progress(20)
+                
+                # Etapa 2: Leitura
+                status_text.text("📖 Lendo e extraindo conteúdo do arquivo...")
+                time.sleep(0.8)
+                progress_bar.progress(40)
+                
+                # Etapa 3: Processamento
+                status_text.text("🤖 Processando com IA...")
+                time.sleep(1)
+                progress_bar.progress(70)
+                
+                # Etapa 4: Aplicando personalização
+                if prompt_personalizado:
+                    status_text.text("✨ Aplicando suas personalizações...")
+                    time.sleep(0.5)
+                progress_bar.progress(90)
+                
+                # Etapa 5: Finalização
+                status_text.text("✅ Finalizando...")
+                time.sleep(0.3)
+                progress_bar.progress(100)
+                status_text.empty()
+            
+            st.success("✅ Resumo gerado com sucesso!")
+            
+            # Exibir resultados (mockup)
+            st.divider()
+            st.subheader("📊 Resultados do Resumo")
+            
+            # Informações do arquivo
+            col_info1, col_info2, col_info3 = st.columns(3)
+            with col_info1:
+                st.metric("📁 Arquivo", uploaded_file.name)
+            with col_info2:
+                st.metric("📏 Tamanho", f"{uploaded_file.size / 1024:.1f} KB")
+            with col_info3:
+                st.metric("📅 Processado em", datetime.now().strftime("%d/%m/%Y %H:%M"))
+            
+            st.divider()
+            
+            # Tabs para diferentes visualizações
+            tab1, tab2, tab3 = st.tabs(["📝 Resumo Principal", "🔍 Detalhes Extraídos", "⚙️ Configurações Aplicadas"])
+            
+            with tab1:
+                st.markdown("### 📝 Resumo Gerado")
+                
+                # Resumo mockup baseado no tipo de arquivo
+                resumo_exemplo = f"""
+                **Resumo Automático do Arquivo: {uploaded_file.name}**
+                
+                Este documento foi processado e analisado pela nossa IA. Aqui está um resumo {tamanho_resumo.lower()} 
+                do conteúdo identificado:
+                
+                **Principais Pontos Identificados:**
+                - Análise estrutural do documento realizada com sucesso
+                - Conteúdo organizado e categorizado
+                - Informações relevantes extraídas e processadas
+                
+                **Contexto e Relevância:**
+                O arquivo contém informações que foram categorizadas e estruturadas para facilitar a compreensão.
+                A análise identificou seções principais, dados relevantes e estrutura do documento.
+                """
+                
+                if prompt_personalizado:
+                    resumo_exemplo += f"""
+                
+                **Personalização Aplicada:**
+                Seu prompt: "{prompt_personalizado}"
+                
+                Com base nas suas instruções específicas, o resumo foi ajustado para focar nos aspectos 
+                que você mencionou, garantindo que as informações mais relevantes para seu contexto sejam destacadas.
+                """
+                
+                if incluir_insights:
+                    resumo_exemplo += """
+                
+                **💡 Insights Adicionais:**
+                - Documento apresenta estrutura organizada
+                - Conteúdo adequado para processamento automatizado
+                - Formato compatível com análise de IA
+                """
+                
+                if incluir_alertas:
+                    resumo_exemplo += """
+                
+                **⚠️ Pontos de Atenção:**
+                - Recomenda-se validação manual de informações críticas
+                - Alguns dados podem requerer contexto adicional
+                - Verificar datas e valores numéricos importantes
+                """
+                
+                st.markdown(resumo_exemplo)
+                
+                # Botão para copiar
+                st.download_button(
+                    label="📥 Baixar Resumo como TXT",
+                    data=resumo_exemplo,
+                    file_name=f"resumo_{uploaded_file.name.split('.')[0]}_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
+                    mime="text/plain"
+                )
+            
+            with tab2:
+                st.markdown("### 🔍 Informações Detalhadas Extraídas")
+                
+                # Mockup de detalhes extraídos
+                col_det1, col_det2 = st.columns(2)
+                
+                with col_det1:
+                    st.markdown("**📊 Estatísticas do Documento:**")
+                    st.info(f"""
+                    - **Tipo:** {uploaded_file.type}
+                    - **Tamanho:** {uploaded_file.size / 1024:.2f} KB
+                    - **Formato:** {uploaded_file.name.split('.')[-1].upper()}
+                    """)
+                
+                with col_det2:
+                    st.markdown("**🎯 Processamento:**")
+                    st.success(f"""
+                    - **Status:** Concluído
+                    - **Qualidade:** Alta
+                    - **Confiança:** 95%
+                    """)
+                
+                st.markdown("**📋 Estrutura Identificada:**")
+                st.code("""
+                Estrutura do documento:
+                ├── Seção 1: Introdução
+                ├── Seção 2: Conteúdo Principal
+                ├── Seção 3: Dados e Informações
+                └── Seção 4: Conclusões
+                """, language="text")
+            
+            with tab3:
+                st.markdown("### ⚙️ Configurações Aplicadas no Processamento")
+                
+                config_df = pd.DataFrame({
+                    "Configuração": [
+                        "Tamanho do Resumo",
+                        "Insights Adicionais",
+                        "Alertas Críticos",
+                        "Prompt Personalizado",
+                        "Modelo de IA",
+                        "Idioma"
+                    ],
+                    "Valor": [
+                        tamanho_resumo,
+                        "✅ Ativado" if incluir_insights else "❌ Desativado",
+                        "✅ Ativado" if incluir_alertas else "❌ Desativado",
+                        "✅ Aplicado" if prompt_personalizado else "❌ Não aplicado",
+                        "T5 (Transformers)",
+                        "Português (PT-BR)"
+                    ]
+                })
+                
+                st.dataframe(config_df, use_container_width=True, hide_index=True)
+            
+            st.divider()
+            
+            # Seção de histórico/salvamento
+            st.subheader("💾 Salvar Resumo")
+            
+            col_save1, col_save2 = st.columns(2)
+            
+            with col_save1:
+                nome_resumo = st.text_input(
+                    "Nome para salvar este resumo",
+                    value=f"Resumo_{uploaded_file.name.split('.')[0]}",
+                    help="Este nome será usado para identificar o resumo no histórico"
+                )
+            
+            with col_save2:
+                tags = st.multiselect(
+                    "Tags (opcional)",
+                    options=["Urgente", "Projeto", "Relatório", "Análise", "Documentação", "Financeiro"],
+                    help="Adicione tags para facilitar a busca futura"
+                )
+            
+            if st.button("💾 Salvar no Histórico", use_container_width=True):
+                st.success(f"✅ Resumo '{nome_resumo}' salvo com sucesso! Você poderá acessá-lo futuramente.")
+                st.info("📌 *Nota: Funcionalidade de backend será implementada em breve para persistência permanente.*")
+    
+    # Seção de histórico (mockup)
+    st.divider()
+    st.subheader("📚 Histórico de Resumos Gerados")
+    
+    # Mockup de histórico
+    with st.expander("Ver resumos anteriores", expanded=False):
+        historico_exemplo = pd.DataFrame({
+            "Data": ["15/11/2025", "14/11/2025", "13/11/2025"],
+            "Arquivo": ["relatorio_projeto.pdf", "analise_mensal.xlsx", "proposta_comercial.docx"],
+            "Nome do Resumo": ["Resumo Projeto Q4", "Análise Outubro", "Proposta Cliente XYZ"],
+            "Tags": ["Projeto, Urgente", "Financeiro, Relatório", "Documentação"],
+            "Status": ["✅ Disponível", "✅ Disponível", "✅ Disponível"]
+        })
+        
+        st.dataframe(historico_exemplo, use_container_width=True, hide_index=True)
+        
+        st.info("💡 Clique em um resumo anterior para visualizá-lo novamente")
+        st.warning("⚠️ *Backend em desenvolvimento - Histórico será persistido no banco de dados em breve*")
 
 # --- Footer ---
 st.divider()
