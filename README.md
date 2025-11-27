@@ -1,4 +1,4 @@
-# 📊 Dashboard de Projetos MC Sonae
+# Dashboard de Projetos MC Sonae
 
 > Sistema completo de ETL + Business Intelligence para acompanhamento de projetos
 
@@ -8,41 +8,41 @@
 
 ---
 
-## 🎯 Visão Geral
+## Visão Geral
 
-Sistema de **extração, processamento e visualização** de dados de projetos que:
-- 📥 Extrai dados de **Excel, PDF e Word**
-- 🗄️ Armazena em **SQLite** com lógica inteligente
-- 🤖 Gera **insights automáticos** com IA
-- 📊 Visualiza em **dashboard interativo**
+Sistema de extração, processamento e visualização de dados de projetos:
+- Excel, PDF e Word → ETL
+- Armazenamento em SQLite com lógica UPSERT
+- Insights automáticos com IA
+- Dashboard interativo (Streamlit)
 
 ---
 
-## ✨ Features
+## Features
 
-### 🔹 **Multi-Format ETL**
+### Multi-Format ETL
 - Excel (`.xlsx`) - Dados tabulares
 - PDF (`.pdf`) - Relatórios formatados  
 - Word (`.docx`) - Documentos estruturados
 
-### 🔹 **Processamento Inteligente**
+### Processamento Inteligente
 - Lógica UPSERT (atualiza ou insere)
 - Validação e limpeza de dados
 - Geração de insights com IA (T5-small)
 
-### 🔹 **Dashboard Completo** ⭐
-- **4 Páginas Especializadas**
-  - 📊 Dashboard Geral (KPIs + Gráficos)
-  - 📋 Lista de Projetos (Filtros + Exportação)
-  - 🔍 Detalhes Individuais (6 abas de conteúdo)
-  - 🤖 Insights de IA
+### Dashboard Completo
+- 4 Páginas Especializadas
+  - Dashboard Geral (KPIs + Gráficos)
+  - Lista de Projetos (Filtros + Exportação)
+  - Detalhes Individuais (6 abas de conteúdo)
+  - Insights de IA
 
-- **Visualizações Interativas**
+- Visualizações Interativas
   - Gráfico de Pizza (Status)
   - Timeline (Atualizações)
   - Barras (Responsáveis)
 
-- **Recursos Avançados**
+- Recursos Avançados
   - Filtros dinâmicos
   - Busca por projeto
   - Exportação CSV
@@ -50,57 +50,90 @@ Sistema de **extração, processamento e visualização** de dados de projetos q
 
 ---
 
-## 🚀 Quick Start
+## Ambiente virtual (venv) e instalação
 
-### 1️⃣ Clone e Instale
-
+Linux / macOS:
 ```bash
-cd projeto-sonae-scraper
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 2️⃣ Setup Automático
-
-```bash
-bash setup.sh
+Windows (PowerShell):
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
 ```
 
-### 3️⃣ Execute o Dashboard
-
-```bash
-streamlit run src/app_melhorado.py
-```
-
-Acesse: **http://localhost:8501** 🎉
+No VS Code: selecione o interpretador `.venv` via "Python: Select Interpreter". Para sair: `deactivate`.
 
 ---
 
-## 📁 Estrutura do Projeto
+## Quick Start
+
+```bash
+# entrar na pasta do projeto
+cd projeto-sonae-scraper
+
+# (opcional) criar e ativar venv conforme acima
+python3 -m venv .venv
+source .venv/bin/activate
+
+# instalar dependências
+pip install -r requirements.txt
+
+# criar banco (executa parser inicial / popula esquema)
+python src/Database/cria_banco.py
+
+# executar ETL (leitores estão em src/Readers/)
+python src/Readers/leitor_excel.py
+python src/Readers/leitor_pdf.py
+python src/Readers/leitor_word.py
+
+# (opcional) gerar insights com IA
+python src/AI/processador_ia.py
+
+# executar dashboard Streamlit (arquivo principal: src/App.py)
+streamlit run src/App.py
+```
+
+Acesse: http://localhost:8501
+
+---
+
+## Estrutura do Projeto
 
 ```
 projeto-sonae-scraper/
 │
-├── 📂 data/                    # Dados e banco
+├── data/                    # Dados e banco
 │   ├── relatorios_sonae.xlsx  # Fonte: Excel
 │   ├── relatorio_riscos.pdf   # Fonte: PDF
 │   ├── relatorio_crm.docx     # Fonte: Word
 │   └── projetos_sonae.db      # Banco SQLite
 │
-├── 📂 src/                     # Código fonte
-│   ├── leitor_excel.py        # ETL: Excel
-│   ├── leitor_pdf.py          # ETL: PDF
-│   ├── leitor_word.py         # ETL: Word
-│   ├── processador_ia.py      # IA: Gerador de insights
-│   ├── app_melhorado.py       # 🌟 Dashboard completo
-│   └── app.py                 # Dashboard básico (legado)
+├── src/                     # Código fonte
+├── App.py                      # Aplicação Streamlit principal
+├── AI/
+│   └── processador_ia.py       # Gerador de insights (IA)
+├── Database/
+│   ├── cria_banco.py           # Cria/atualiza esquema do banco
+│   └── limpa_banco.py          # Script de limpeza
+└── Readers/
+    ├── leitor_excel.py         # ETL: Excel
+    ├── leitor_pdf.py           # ETL: PDF
+    └── leitor_word.py          # ETL: Word
 │
-├── 📂 .streamlit/
+├── .streamlit/
 │   └── config.toml            # Tema e configurações
 │
-├── 📄 setup.sh                # Script de setup
-├── 📄 comparar_versoes.sh     # Comparar dashboards
+├── setup.sh                # Script de setup
+├── comparar_versoes.sh     # Comparar dashboards
 │
-└── 📚 Documentação
+└── Documentação
     ├── GUIA_COMPLETO.md       # Guia de uso
     ├── MELHORIAS_FRONTEND.md  # Antes vs Depois
     ├── GUIA_PERSONALIZACAO.md # Como customizar
@@ -109,18 +142,18 @@ projeto-sonae-scraper/
 
 ---
 
-## 🛠️ Tecnologias
+## Tecnologias
 
 | Categoria | Stack |
 |-----------|-------|
-| **Backend** | Python 3.13, SQLite, Pandas |
-| **Frontend** | Streamlit, Plotly, CSS |
-| **IA** | Transformers (T5-small) |
-| **ETL** | openpyxl, PyMuPDF, python-docx |
+| Backend | Python 3.13, SQLite, Pandas |
+| Frontend | Streamlit, Plotly, CSS |
+| IA | Transformers (T5-small) |
+| ETL | openpyxl, PyMuPDF, python-docx |
 
 ---
 
-## 📊 Screenshots
+## Screenshots
 
 ### Dashboard Geral
 ![Dashboard com KPIs, gráficos de pizza e timeline]
@@ -133,7 +166,7 @@ projeto-sonae-scraper/
 
 ---
 
-## 📖 Documentação
+## Documentação
 
 - **[GUIA_COMPLETO.md](GUIA_COMPLETO.md)** - Instruções completas de uso
 - **[MELHORIAS_FRONTEND.md](MELHORIAS_FRONTEND.md)** - Comparação antes/depois
@@ -142,7 +175,7 @@ projeto-sonae-scraper/
 
 ---
 
-## 🎯 Uso Manual (Passo a Passo)
+## Uso Manual (Passo a Passo)
 
 ```bash
 # 1. Criar banco de dados
@@ -162,7 +195,7 @@ streamlit run src/app_melhorado.py
 
 ---
 
-## 🆚 Comparar Versões
+## Comparar Versões
 
 ```bash
 bash comparar_versoes.sh
@@ -175,9 +208,9 @@ Escolha:
 
 ---
 
-## 🚀 Roadmap
+## Roadmap
 
-### ✅ Concluído
+### Concluído
 - [x] Extração multi-formato
 - [x] Banco de dados estruturado
 - [x] Processamento com IA
@@ -187,7 +220,7 @@ Escolha:
 - [x] Exportação CSV
 - [x] Documentação completa
 
-### 🔜 Próximos Passos
+### Próximos Passos
 - [ ] Autenticação de usuários
 - [ ] Alertas e notificações
 - [ ] Exportação PDF
@@ -197,31 +230,33 @@ Escolha:
 
 ---
 
-## 🤝 Contribuição
+## Contribuição
 
-Este é um projeto acadêmico da disciplina **Projetos 2**.
+Este é um projeto acadêmico da disciplina Projetos 2.
 
 ---
 
-## 👨‍💻 Autor
+## Autor
 
-**Gabriel Peixoto**  
+**Gabriel Peixoto**
+**Rafael Holder**
+**André Sieczko**      
 Projetos 2 - MC Sonae
 
 ---
 
-## 📄 Licença
+## Licença
 
 MIT License - veja [LICENSE](LICENSE) para detalhes
 
 ---
 
-## 🎉 Agradecimentos
+## Agradecimentos
 
-- Streamlit pela framework incrível
+- Streamlit pela framework
 - Hugging Face pelos modelos de IA
 - Comunidade Python
 
 ---
 
-**⭐ Se este projeto foi útil, considere dar uma estrela!**
+Se este projeto foi útil, considere dar uma
