@@ -28,9 +28,6 @@ if css_path.exists():
 else:
     st.warning("Arquivo de estilos não encontrado: src/Styles/styles.css")
 
-else:
-    st.warning("Arquivo de estilos não encontrado: src/Styles/styles.css")
-
 # --- SIDEBAR ---
 pagina, df_filtrado = render_sidebar()
 
