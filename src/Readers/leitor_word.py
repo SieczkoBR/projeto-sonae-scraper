@@ -1,8 +1,10 @@
 import docx
 import sqlite3
 import os
+# Importamos a função de segurança
+from seguranca import encriptar_dado
 
-CAMINHO_ARQUIVO_WORD = "data/relatorio_crm.docx" # Baseado em 'image_acc82a.png'
+CAMINHO_ARQUIVO_WORD = "data/relatorio_crm.docx"
 CAMINHO_BANCO = "data/projetos_sonae.db"
 
 def processar_dados_word():
@@ -12,20 +14,20 @@ def processar_dados_word():
         documento = docx.Document(CAMINHO_ARQUIVO_WORD)
         print(f"Arquivo '{CAMINHO_ARQUIVO_WORD}' lido com sucesso.")
 
-        # --- ETAPA 2: A "PESCARIA" AVANÇADA (DETETIVE 3.1 - CORRIGIDO) ---
-        print("Iniciando 'modo detetive 3.1' para extrair seções...")
+        # --- ETAPA 2: A "PESCARIA" AVANÇADA ---
+        print("Iniciando 'modo detetive 3.1'...")
         
         dados_encontrados = {}
         modo_captura = None 
         texto_capturado = [] 
 
-        # --- MARCADORES CORRIGIDOS (Baseado em image_acc82a.png) ---
+        # Marcadores baseados no seu arquivo real
         MARCADORES = {
-            "Nome do Projeto:": "nome_projeto", # CORRIGIDO
+            "Nome do Projeto:": "nome_projeto",
             "Responsável:": "responsavel",
             "Status:": "status",
             "Data:": "data_ultima_atualizacao",
-            "1. Resumo Executivo": "resumo_executivo", # Manteve o ':' fora
+            "1. Resumo Executivo": "resumo_executivo",
             "2. Progresso Atual": "progresso_atual",
             "3. Principais Desafios": "principais_desafios",
             "4. Ações Corretivas": "acoes_corretivas",
@@ -34,58 +36,49 @@ def processar_dados_word():
         
         for paragrafo in documento.paragraphs:
             texto_linha = paragrafo.text.strip()
-            if not texto_linha:
-                continue
+            if not texto_linha: continue
 
             novo_modo = None
-            
-            # Verifica se a linha é um dos nossos marcadores
             for marcador, chave in MARCADORES.items():
                 if texto_linha.startswith(marcador):
                     novo_modo = chave
-                    
-                    # --- Lógica de captura de linha única (para campos simples) ---
-                    # (Como "Nome do Projeto:", "Status:", etc.)
                     if chave in ["nome_projeto", "responsavel", "status", "data_ultima_atualizacao"]:
                         dados_encontrados[chave] = texto_linha.split(':', 1)[1].strip()
-                        novo_modo = None # Não entra em modo de captura
+                        novo_modo = None
                     break 
 
-            # Se encontramos um novo marcador de seção (ex: "1. Resumo Executivo")
             if novo_modo:
                 if modo_captura and texto_capturado:
                     dados_encontrados[modo_captura] = "\n".join(texto_capturado)
-                
                 modo_captura = novo_modo 
                 texto_capturado = [] 
-            
-            # Se não é um marcador, mas estamos em modo de captura
             elif modo_captura:
-                # Se a linha começar com um traço (lista), formata ela
                 if texto_linha.startswith("-"):
                     texto_capturado.append(f"• {texto_linha[1:].strip()}")
                 else:
                     texto_capturado.append(texto_linha)
 
-        # Salva a última seção capturada
         if modo_captura and texto_capturado:
             dados_encontrados[modo_captura] = "\n".join(texto_capturado)
 
-        # --- ETAPA 3: VERIFICAR SE ACHAMOS O BÁSICO ---
+        # --- ETAPA 3: VERIFICAÇÃO ---
         if 'nome_projeto' not in dados_encontrados:
-            print("ERRO: Não foi possível encontrar o marcador 'Nome do Projeto:' no documento.")
+            print("ERRO: Não foi possível encontrar o marcador 'Nome do Projeto:'.")
             return 
 
-        print(f"Dados detalhados extraídos para o projeto: {dados_encontrados.get('nome_projeto')}")
+        print(f"Dados detalhados extraídos para: {dados_encontrados.get('nome_projeto')}")
 
-        # --- ETAPA 4: LÓGICA UPSERT (Atualizada) ---
+        # --- ETAPA 4: LÓGICA UPSERT COM SEGURANÇA ---
         conexao = sqlite3.connect(CAMINHO_BANCO)
         cursor = conexao.cursor()
 
         nome = dados_encontrados.get('nome_projeto')
         
+        # AQUI APLICAMOS A SEGURANÇA:
+        responsavel_seguro = encriptar_dado(dados_encontrados.get('responsavel'))
+        
         dados_completos = {
-            "responsavel": dados_encontrados.get('responsavel'),
+            "responsavel": responsavel_seguro, # Salva criptografado
             "status": dados_encontrados.get('status'),
             "data_ultima_atualizacao": dados_encontrados.get('data_ultima_atualizacao'),
             "fonte_dados": CAMINHO_ARQUIVO_WORD,
@@ -100,6 +93,7 @@ def processar_dados_word():
         projeto_existente = cursor.fetchone()
 
         if projeto_existente:
+            # UPDATE
             id_projeto = projeto_existente[0]
             sql_update = """
             UPDATE projetos SET 
@@ -110,9 +104,9 @@ def processar_dados_word():
             """
             valores = list(dados_completos.values()) + [id_projeto]
             cursor.execute(sql_update, valores)
-            print(f"Sucesso! Projeto '{nome}' foi ATUALIZADO no banco com detalhes completos.")
+            print(f"Sucesso! Projeto '{nome}' ATUALIZADO (Seguro).")
         else:
-            # (Esta lógica de INSERT está correta, mas nosso projeto já existe)
+            # INSERT
             sql_insert = """
             INSERT INTO projetos (
                 nome_projeto, responsavel, status, data_ultima_atualizacao, fonte_dados,
@@ -122,18 +116,15 @@ def processar_dados_word():
             """
             valores = [nome] + list(dados_completos.values())
             cursor.execute(sql_insert, valores)
-            print(f"Sucesso! Projeto '{nome}' foi INSERIDO no banco com detalhes completos.")
+            print(f"Sucesso! Projeto '{nome}' INSERIDO (Seguro).")
 
         conexao.commit()
 
     except Exception as e:
         print(f"ERRO inesperado ao processar Word: {e}")
-        if conexao:
-            conexao.rollback()
+        if conexao: conexao.rollback()
     finally:
-        if conexao:
-            conexao.close()
-            print("Conexão com o banco de dados fechada.")
+        if conexao: conexao.close()
 
 if __name__ == "__main__":
     processar_dados_word()
