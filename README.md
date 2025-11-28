@@ -68,7 +68,7 @@ bash setup.sh
 ### 3️⃣ Execute o Dashboard
 
 ```bash
-streamlit run src/app_melhorado.py
+streamlit run src/App.py
 ```
 
 Acesse: **http://localhost:8501** 🎉
@@ -87,12 +87,12 @@ projeto-sonae-scraper/
 │   └── projetos_sonae.db      # Banco SQLite
 │
 ├── 📂 src/                     # Código fonte
-│   ├── leitor_excel.py        # ETL: Excel
-│   ├── leitor_pdf.py          # ETL: PDF
-│   ├── leitor_word.py         # ETL: Word
-│   ├── processador_ia.py      # IA: Gerador de insights
-│   ├── app_melhorado.py       # 🌟 Dashboard completo
-│   └── app.py                 # Dashboard básico (legado)
+│   ├── App.py                 # 🌟 Dashboard principal
+│   ├── Components/            # Componentes modulares
+│   ├── AI/                    # Processador de IA
+│   ├── Database/              # Scripts do banco
+│   ├── Readers/               # Leitores ETL
+│   └── Styles/                # CSS customizado
 │
 ├── 📂 .streamlit/
 │   └── config.toml            # Tema e configurações
@@ -157,7 +157,7 @@ python src/leitor_word.py
 python src/processador_ia.py
 
 # 4. Executar dashboard
-streamlit run src/app_melhorado.py
+streamlit run src/App.py
 ```
 
 ---

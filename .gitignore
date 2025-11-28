@@ -1,0 +1,38 @@
+# Ambiente Virtual
+venv/
+.venv/
+env/
+
+# Arquivos de Cache Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Streamlit
+.streamlit/
+.streamlitconfig.toml
+
+# Logs
+logs/
+*.log
+
+# Banco de Dados Local
+data/projetos_sonae.db
+*.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Modelos de IA (grandes!)
+models/
+*.bin
+*.pt

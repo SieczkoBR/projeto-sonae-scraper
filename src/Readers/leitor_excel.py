@@ -2,7 +2,7 @@ import pandas as pd
 import sqlite3
 import os
 # Importamos a função de segurança
-from seguranca import encriptar_dado
+from criptograph import encriptar_dado
 
 CAMINHO_ARQUIVO_EXCEL = "data/relatorios_sonae.xlsx"
 CAMINHO_BANCO = "data/projetos_sonae.db"

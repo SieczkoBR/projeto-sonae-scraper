@@ -2,7 +2,7 @@ import fitz  # PyMuPDF
 import sqlite3
 import os
 # Importamos a função de segurança
-from seguranca import encriptar_dado
+from criptograph import encriptar_dado
 
 CAMINHO_ARQUIVO_PDF = "data/relatorio_riscos.pdf"
 CAMINHO_BANCO = "data/projetos_sonae.db"
