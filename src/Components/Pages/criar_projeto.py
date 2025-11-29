@@ -128,7 +128,161 @@ def render_criar_projeto_upload():
         elif not arquivo:
             st.error("Selecione um arquivo")
         else:
-            st.info("Funcionalidade de IA em desenvolvimento. Use o formulário manual por enquanto.")
+            # Verificar duplicata
+            if verificar_projeto_existente(nome):
+                st.error(f"Já existe um projeto com o nome '{nome}'")
+            else:
+                with st.spinner("Processando arquivo..."):
+                    sucesso, mensagem = processar_upload_arquivo(
+                        arquivo=arquivo,
+                        nome_projeto=nome,
+                        criado_por=st.session_state.get('user_id')
+                    )
+                    
+                    if sucesso:
+                        st.success(mensagem)
+                        st.info("Redirecionando...")
+                        import time
+                        time.sleep(2)
+                        st.rerun()
+                    else:
+                        st.error(mensagem)
+
+
+def processar_upload_arquivo(arquivo, nome_projeto: str, criado_por: int) -> tuple[bool, str]:
+    """Processa arquivo enviado e cria projeto"""
+    try:
+        # Determinar tipo de arquivo
+        extensao = arquivo.name.split('.')[-1].lower()
+        
+        # Importar leitores apropriados
+        conteudo = None
+        
+        if extensao == 'pdf':
+            from Readers.leitor_pdf import ler_pdf
+            conteudo = ler_pdf(arquivo)
+        
+        elif extensao in ['docx', 'doc']:
+            from Readers.leitor_word import ler_word
+            # Salvar temporariamente para ler
+            import tempfile
+            with tempfile.NamedTemporaryFile(delete=False, suffix=f'.{extensao}') as tmp:
+                tmp.write(arquivo.getbuffer())
+                tmp_path = tmp.name
+            conteudo = ler_word(tmp_path)
+            os.remove(tmp_path)
+        
+        elif extensao in ['xlsx', 'xls']:
+            from Readers.leitor_excel import ler_excel
+            # Salvar temporariamente para ler
+            import tempfile
+            with tempfile.NamedTemporaryFile(delete=False, suffix=f'.{extensao}') as tmp:
+                tmp.write(arquivo.getbuffer())
+                tmp_path = tmp.name
+            conteudo = ler_excel(tmp_path)
+            os.remove(tmp_path)
+        
+        else:
+            return False, f"Formato de arquivo não suportado: .{extensao}"
+        
+        if not conteudo or len(conteudo.strip()) < 50:
+            return False, "Não foi possível extrair conteúdo suficiente do arquivo"
+        
+        # Salvar arquivo no diretório data
+        caminho_arquivo = salvar_arquivo_upload(arquivo, nome_projeto)
+        
+        # Extrair informações básicas do conteúdo
+        dados_extraidos = extrair_dados_basicos(conteudo)
+        
+        # Criar projeto no banco
+        CAMINHO_BANCO = os.path.join("data", "projetos_sonae.db")
+        conexao = sqlite3.connect(CAMINHO_BANCO)
+        cursor = conexao.cursor()
+        
+        # Criptografar responsável se houver
+        responsavel = dados_extraidos.get('responsavel', 'A definir')
+        responsavel_cript = encriptar_dado(responsavel)
+        
+        cursor.execute("""
+            INSERT INTO projetos (
+                nome, nome_projeto, responsavel, status, 
+                descricao, fonte_dados, criado_por, criado_em,
+                data_inicio
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            nome_projeto,
+            nome_projeto,
+            responsavel_cript,
+            dados_extraidos.get('status', 'Em Andamento'),
+            conteudo[:1000],  # Primeiros 1000 caracteres como descrição
+            caminho_arquivo,
+            criado_por,
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            datetime.now().strftime("%Y-%m-%d")
+        ))
+        
+        conexao.commit()
+        conexao.close()
+        
+        return True, f"Projeto '{nome_projeto}' criado com sucesso a partir do arquivo!"
+        
+    except Exception as e:
+        import traceback
+        return False, f"Erro ao processar arquivo: {str(e)}\n{traceback.format_exc()}"
+
+
+def salvar_arquivo_upload(arquivo, nome_projeto: str) -> str:
+    """Salva arquivo enviado no diretório data"""
+    import os
+    
+    # Criar diretório de uploads se não existir
+    diretorio_uploads = os.path.join("data", "uploads")
+    os.makedirs(diretorio_uploads, exist_ok=True)
+    
+    # Gerar nome seguro do arquivo
+    extensao = arquivo.name.split('.')[-1]
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    nome_arquivo = f"{nome_projeto.replace(' ', '_')}_{timestamp}.{extensao}"
+    caminho_completo = os.path.join(diretorio_uploads, nome_arquivo)
+    
+    # Salvar arquivo
+    with open(caminho_completo, "wb") as f:
+        f.write(arquivo.getbuffer())
+    
+    return caminho_completo
+
+
+def extrair_dados_basicos(conteudo: str) -> dict:
+    """Extrai informações básicas do conteúdo"""
+    import re
+    
+    dados = {}
+    
+    # Tentar extrair responsável
+    padroes_responsavel = [
+        r'responsável[:\s]+([A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú][a-zà-ú]+)*)',
+        r'gestor[:\s]+([A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú][a-zà-ú]+)*)',
+        r'coordenador[:\s]+([A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú][a-zà-ú]+)*)'
+    ]
+    
+    for padrao in padroes_responsavel:
+        match = re.search(padrao, conteudo, re.IGNORECASE)
+        if match:
+            dados['responsavel'] = match.group(1)
+            break
+    
+    # Tentar determinar status
+    conteudo_lower = conteudo.lower()
+    if 'concluído' in conteudo_lower or 'finalizado' in conteudo_lower:
+        dados['status'] = 'Concluído'
+    elif 'andamento' in conteudo_lower or 'em curso' in conteudo_lower:
+        dados['status'] = 'Em Andamento'
+    elif 'planejado' in conteudo_lower or 'planejamento' in conteudo_lower:
+        dados['status'] = 'Planejado'
+    else:
+        dados['status'] = 'Em Andamento'
+    
+    return dados
 
 
 def verificar_projeto_existente(nome: str) -> bool:

@@ -100,8 +100,8 @@ def render_perfil_page():
         cargos_disponiveis = {
             'visualizador': 'Visualizador - Apenas visualização',
             'analista': 'Analista - Visualização e análises',
-            'gestor': 'Gestor - Gerenciamento de projetos',
-            'desenvolvedor': 'Desenvolvedor - Acesso técnico completo'
+            'desenvolvedor': 'Desenvolvedor - Acesso técnico completo',
+            'gestor': 'Gestor - Gerenciamento e criação de projetos'
         }
         
         # Remover cargo atual da lista

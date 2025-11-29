@@ -34,6 +34,9 @@ def validar_senha(senha: str) -> tuple[bool, str]:
 def render_cadastro_page():
     """Renderiza a página de cadastro de nova conta"""
     
+    # Espaçamento superior
+    st.markdown("<div style='margin-top: 2rem;'></div>", unsafe_allow_html=True)
+    
     # Centralizar conteúdo
     col1, col2, col3 = st.columns([1, 2, 1])
     
@@ -116,12 +119,12 @@ def render_cadastro_page():
             
             cargo = st.selectbox(
                 "Selecione o cargo *",
-                options=["visualizador", "analista", "gestor", "desenvolvedor"],
+                options=["visualizador", "analista", "desenvolvedor", "gestor"],
                 format_func=lambda x: {
                     "visualizador": "Visualizador - Apenas visualização",
                     "analista": "Analista - Visualização e análises",
-                    "gestor": "Gestor - Gerenciamento de projetos",
-                    "desenvolvedor": "Desenvolvedor - Acesso técnico completo"
+                    "desenvolvedor": "Desenvolvedor - Acesso técnico completo",
+                    "gestor": "Gestor - Gerenciamento e criação de projetos"
                 }.get(x, x),
                 key="cadastro_cargo",
                 help="Sua solicitação será analisada pelo administrador"
@@ -238,3 +241,6 @@ def render_cadastro_page():
             - Acesso técnico ao sistema
             - Gerenciar configurações avançadas
             """)
+        
+        # Espaçamento inferior
+        st.markdown("<div style='margin-bottom: 3rem;'></div>", unsafe_allow_html=True)

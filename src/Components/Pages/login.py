@@ -9,6 +9,9 @@ from Auth.autenticacao import AuthManager
 def render_login_page():
     """Renderiza a página de login"""
     
+    # Espaçamento superior
+    st.markdown("<div style='margin-top: 2rem;'></div>", unsafe_allow_html=True)
+    
     # Centralizar conteúdo
     col1, col2, col3 = st.columns([1, 2, 1])
     

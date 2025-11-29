@@ -75,12 +75,12 @@ def listar_mudancas_pendentes() -> list:
                 mc.id,
                 mc.usuario_id,
                 mc.cargo_solicitado,
-                mc.justificativa,
+                mc.mensagem_solicitacao as justificativa,
                 mc.data_solicitacao,
                 u.nome_completo,
                 u.username,
                 u.cargo as cargo_atual
-            FROM mudancas_cargo mc
+            FROM solicitacoes_mudanca_cargo mc
             JOIN usuarios u ON mc.usuario_id = u.id
             WHERE mc.status = 'pendente'
             ORDER BY mc.data_solicitacao DESC
@@ -89,7 +89,8 @@ def listar_mudancas_pendentes() -> list:
         solicitacoes = [dict(row) for row in cursor.fetchall()]
         conexao.close()
         return solicitacoes
-    except:
+    except Exception as e:
+        print(f"Erro ao listar mudanças pendentes: {e}")
         return []
 
 
@@ -105,7 +106,7 @@ def aprovar_mudanca_cargo(usuario_id: int, novo_cargo: str, solicitacao_id: int)
         
         # Marcar solicitação como aprovada
         cursor.execute("""
-            UPDATE mudancas_cargo 
+            UPDATE solicitacoes_mudanca_cargo 
             SET status = 'aprovado', 
                 data_resposta = datetime('now'),
                 respondido_por = ?
@@ -115,7 +116,8 @@ def aprovar_mudanca_cargo(usuario_id: int, novo_cargo: str, solicitacao_id: int)
         conexao.commit()
         conexao.close()
         return True
-    except:
+    except Exception as e:
+        print(f"Erro ao aprovar mudança de cargo: {e}")
         return False
 
 
@@ -127,16 +129,17 @@ def negar_mudanca_cargo(solicitacao_id: int, motivo: str = None) -> bool:
         cursor = conexao.cursor()
         
         cursor.execute("""
-            UPDATE mudancas_cargo 
+            UPDATE solicitacoes_mudanca_cargo 
             SET status = 'negado', 
                 data_resposta = datetime('now'),
                 respondido_por = ?,
-                motivo_negacao = ?
+                mensagem_resposta = ?
             WHERE id = ?
         """, (st.session_state.get('user_id'), motivo, solicitacao_id))
         
         conexao.commit()
         conexao.close()
         return True
-    except:
+    except Exception as e:
+        print(f"Erro ao negar mudança de cargo: {e}")
         return False

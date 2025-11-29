@@ -60,11 +60,12 @@ def contar_mudancas_cargo_pendentes() -> int:
     try:
         conexao = sqlite3.connect(CAMINHO_BANCO)
         cursor = conexao.cursor()
-        cursor.execute("SELECT COUNT(*) FROM mudancas_cargo WHERE status = 'pendente'")
+        cursor.execute("SELECT COUNT(*) FROM solicitacoes_mudanca_cargo WHERE status = 'pendente'")
         count = cursor.fetchone()[0]
         conexao.close()
         return count
-    except:
+    except Exception as e:
+        print(f"Erro ao contar mudanças de cargo pendentes: {e}")
         return 0
 
 def render_sidebar():
