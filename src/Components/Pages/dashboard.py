@@ -6,14 +6,41 @@ from Components.Charts import (
     criar_grafico_responsaveis
 )
 
-def render_dashboard_page(df_filtrado):
+def render_dashboard_page(df_projetos):
     """Renderiza a página do Dashboard Geral"""
-    st.title("📊 Dashboard Geral de Projetos MC Sonae")
+    st.title("Dashboard Geral de Projetos MC Sonae")
     st.markdown("Visão completa do portfólio de projetos")
     
-    if df_filtrado.empty:
-        st.warning("⚠️ Nenhum dado encontrado.")
+    if df_projetos.empty:
+        st.warning("Nenhum dado encontrado.")
         return
+    
+    # Filtros
+    st.subheader("Filtros")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        status_opcoes = ["Todos"] + sorted(df_projetos['status'].dropna().unique().tolist())
+        filtro_status = st.selectbox("Status", status_opcoes, key="filtro_status_dash")
+    
+    with col2:
+        responsavel_opcoes = ["Todos"] + sorted(df_projetos['responsavel'].dropna().unique().tolist())
+        filtro_responsavel = st.selectbox("Responsável", responsavel_opcoes, key="filtro_resp_dash")
+    
+    # Aplicar filtros
+    df_filtrado = df_projetos.copy()
+    
+    if filtro_status != "Todos":
+        df_filtrado = df_filtrado[df_filtrado['status'] == filtro_status]
+    
+    if filtro_responsavel != "Todos":
+        df_filtrado = df_filtrado[df_filtrado['responsavel'] == filtro_responsavel]
+    
+    if df_filtrado.empty:
+        st.warning("Nenhum projeto encontrado com os filtros selecionados.")
+        return
+    
+    st.divider()
     
     # KPIs
     render_kpi_row(df_filtrado)

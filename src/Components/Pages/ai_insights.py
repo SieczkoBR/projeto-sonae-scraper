@@ -1,17 +1,17 @@
 import streamlit as st
 from Components.Charts import get_status_info
 
-def render_ai_insights_page(df_filtrado):
+def render_ai_insights_page(df_projetos):
     """Renderiza a página de Insights de IA"""
     st.title("🤖 Insights Gerados por IA")
     st.markdown("Resumos automáticos gerados pelo modelo T5")
     
-    if df_filtrado.empty:
+    if df_projetos.empty:
         st.warning("⚠️ Nenhum projeto disponível")
         return
     
     # Filtrar apenas projetos com IA
-    df_com_ia = df_filtrado[df_filtrado['resumo_ia'].notna()]
+    df_com_ia = df_projetos[df_projetos['resumo_ia'].notna()]
     
     if df_com_ia.empty:
         st.info("🤖 Nenhum insight de IA foi gerado ainda. Execute `python src/processador_ia.py`")

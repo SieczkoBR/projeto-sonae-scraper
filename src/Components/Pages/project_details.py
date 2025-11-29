@@ -1,23 +1,23 @@
 import streamlit as st
 from Components.Charts import get_status_info
 
-def render_project_details_page(df_filtrado):
+def render_project_details_page(df_projetos):
     """Renderiza a página de Detalhes do Projeto"""
     st.title("🔍 Detalhes Completos do Projeto")
     
-    if df_filtrado.empty:
+    if df_projetos.empty:
         st.warning("⚠️ Nenhum projeto disponível")
         return
     
     # Seletor de projeto
     projeto_selecionado = st.selectbox(
         "Selecione um projeto:",
-        df_filtrado['nome_projeto'].tolist(),
+        df_projetos['nome_projeto'].tolist(),
         index=0
     )
     
     # Filtrar dados do projeto
-    projeto = df_filtrado[df_filtrado['nome_projeto'] == projeto_selecionado].iloc[0]
+    projeto = df_projetos[df_projetos['nome_projeto'] == projeto_selecionado].iloc[0]
     
     # Header com status
     col_nome, col_status = st.columns([3, 1])

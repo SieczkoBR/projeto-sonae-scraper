@@ -9,7 +9,6 @@ caminho_src = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, caminho_src)
 
 from Readers.criptograph import decriptar_dado
-from Components.Filters import render_sidebar_filters, render_refresh_button
 from Components.Pages.login import logout
 
 def carregar_dados():
@@ -100,10 +99,6 @@ def render_sidebar():
         </div>
         """, unsafe_allow_html=True)
         
-        # Botão de logout
-        if st.button("Sair", type="secondary", width="stretch"):
-            logout()
-        
         st.divider()
         
         # Navegação baseada no cargo
@@ -112,17 +107,9 @@ def render_sidebar():
         # Definir páginas por cargo
         paginas_por_cargo = {
             'admin': [
-                "Dashboard Geral",
-                "Lista de Projetos",
-                "Detalhes do Projeto",
-                "Insights de IA",
-                "Relatório Executivo IA",
-                "Criar Projeto",
-                "Gerenciar Projetos",
                 "Administrar Usuários",
                 "Aprovar Contas",
-                "Aprovar Mudança de Cargo",
-                "Perfil"
+                "Aprovar Mudança de Cargo"
             ],
             'desenvolvedor': [
                 "Dashboard Geral",
@@ -130,8 +117,6 @@ def render_sidebar():
                 "Detalhes do Projeto",
                 "Insights de IA",
                 "Relatório Executivo IA",
-                "Criar Projeto",
-                "Gerenciar Projetos",
                 "Perfil"
             ],
             'gestor': [
@@ -149,13 +134,11 @@ def render_sidebar():
                 "Lista de Projetos",
                 "Detalhes do Projeto",
                 "Insights de IA",
-                "Relatório Executivo IA",
                 "Perfil"
             ],
             'visualizador': [
                 "Dashboard Geral",
                 "Lista de Projetos",
-                "Detalhes do Projeto",
                 "Perfil"
             ]
         }
@@ -196,15 +179,48 @@ def render_sidebar():
         )
         
         st.divider()
-        st.subheader("Filtros")
         
-        df_projetos = carregar_dados()
-        df_filtrado = render_sidebar_filters(df_projetos)
+        # Botão de atualizar com cor customizada
+        st.markdown("""
+        <style>
+        div[data-testid="stButton"] button[kind="secondary"] {
+            background-color: #06b6d4 !important;
+            color: white !important;
+            border: none !important;
+        }
+        div[data-testid="stButton"] button[kind="secondary"]:hover {
+            background-color: #0891b2 !important;
+            color: white !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
         
-        st.divider()
-        render_refresh_button()
+        if st.button("🔄 Atualizar Dados", type="secondary", width="stretch", key="refresh_btn"):
+            st.cache_data.clear()
+            st.rerun()
+        
+        # Botão de sair no final com cor customizada
+        st.markdown("""
+        <style>
+        div[data-testid="stButton"] button[kind="primary"] {
+            background-color: #dc2626 !important;
+            color: white !important;
+            border: none !important;
+            font-weight: 600 !important;
+        }
+        div[data-testid="stButton"] button[kind="primary"]:hover {
+            background-color: #b91c1c !important;
+            color: white !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        if st.button("🚪 Sair do Sistema", type="primary", width="stretch", key="logout_bottom_btn"):
+            logout()
         
         # Remover ícone da página selecionada
         pagina_sem_icone = pagina.split(' ', 1)[1] if ' ' in pagina else pagina
         
-        return pagina_sem_icone, df_filtrado
+        df_projetos = carregar_dados()
+        
+        return pagina_sem_icone, df_projetos
