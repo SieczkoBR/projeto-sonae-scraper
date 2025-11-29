@@ -3,6 +3,10 @@ venv/
 .venv/
 env/
 
+# Variáveis de Ambiente
+.env
+.env.local
+
 # Arquivos de Cache Python
 __pycache__/
 *.py[cod]

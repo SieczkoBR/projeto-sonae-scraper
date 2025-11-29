@@ -2,10 +2,35 @@ import docx
 import sqlite3
 import os
 # Importamos a função de segurança
-from criptograph import encriptar_dado
+from Readers.criptograph import encriptar_dado
 
 CAMINHO_ARQUIVO_WORD = "data/relatorio_crm.docx"
 CAMINHO_BANCO = "data/projetos_sonae.db"
+
+
+def ler_word(caminho_arquivo):
+    """
+    Lê um arquivo Word e retorna todo o texto extraído.
+    
+    Args:
+        caminho_arquivo: Caminho para o arquivo Word (.docx)
+        
+    Returns:
+        String contendo todo o texto do documento
+    """
+    try:
+        documento = docx.Document(caminho_arquivo)
+        texto_completo = ""
+        
+        for paragrafo in documento.paragraphs:
+            texto_completo += paragrafo.text + "\n"
+        
+        return texto_completo
+        
+    except Exception as e:
+        print(f"Erro ao ler Word: {e}")
+        return None
+
 
 def processar_dados_word():
     conexao = None

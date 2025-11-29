@@ -36,10 +36,10 @@ def render_sidebar_filters(df_projetos):
 def render_refresh_button():
     """Renderiza botão de atualização de dados com estilo customizado"""
     if st.button(
-        "🔄 Atualizar Dados", 
+        "Atualizar Dados", 
         use_container_width=True,
         key="refresh_button"
     ):
         st.cache_data.clear()
-        st.success("✅ Dados atualizados com sucesso!")
+        st.success("Dados atualizados com sucesso!")
         st.rerun()

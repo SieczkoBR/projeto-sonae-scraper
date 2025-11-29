@@ -1,23 +1,23 @@
 import streamlit as st
 from Components.Charts import get_status_info
 
-def render_project_details_page(df_filtrado):
+def render_project_details_page(df_projetos):
     """Renderiza a página de Detalhes do Projeto"""
-    st.title("🔍 Detalhes Completos do Projeto")
+    st.title("Detalhes Completos do Projeto")
     
-    if df_filtrado.empty:
-        st.warning("⚠️ Nenhum projeto disponível")
+    if df_projetos.empty:
+        st.warning("Nenhum projeto disponível")
         return
     
     # Seletor de projeto
     projeto_selecionado = st.selectbox(
         "Selecione um projeto:",
-        df_filtrado['nome_projeto'].tolist(),
+        df_projetos['nome_projeto'].tolist(),
         index=0
     )
     
     # Filtrar dados do projeto
-    projeto = df_filtrado[df_filtrado['nome_projeto'] == projeto_selecionado].iloc[0]
+    projeto = df_projetos[df_projetos['nome_projeto'] == projeto_selecionado].iloc[0]
     
     # Header com status
     col_nome, col_status = st.columns([3, 1])
@@ -35,18 +35,18 @@ def render_project_details_page(df_filtrado):
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.metric("👤 Responsável", projeto.get('responsavel', 'N/A'))
+        st.metric("Responsável", projeto.get('responsavel', 'N/A'))
     
     with col2:
-        st.metric("📅 Última Atualização", projeto.get('data_ultima_atualizacao', 'N/A'))
+        st.metric("Última Atualização", projeto.get('data_ultima_atualizacao', 'N/A'))
     
     with col3:
-        st.metric("📂 Fonte", projeto.get('fonte_dados', 'N/A').split('/')[-1] if projeto.get('fonte_dados') else 'N/A')
+        st.metric("Fonte", projeto.get('fonte_dados', 'N/A').split('/')[-1] if projeto.get('fonte_dados') else 'N/A')
     
     st.divider()
     
     # Abas para conteúdo detalhado
-    tabs = st.tabs(["📝 Resumo Executivo", "📈 Progresso", "⚠️ Desafios", "🔧 Ações", "🔮 Perspectiva", "🤖 Insight IA"])
+    tabs = st.tabs(["Resumo Executivo", "Progresso", "Desafios", "Ações", "Perspectiva", "Insight IA"])
     
     with tabs[0]:
         if projeto.get('resumo_executivo'):
@@ -80,6 +80,6 @@ def render_project_details_page(df_filtrado):
     
     with tabs[5]:
         if projeto.get('resumo_ia'):
-            st.success(f"🤖 **Insight Automático:** {projeto['resumo_ia']}")
+            st.success(f"**Insight Automático:** {projeto['resumo_ia']}")
         else:
-            st.warning("🤖 Insight de IA ainda não gerado. Execute `processador_ia.py`")
+            st.warning("Insight de IA ainda não gerado. Execute `processador_ia.py`")

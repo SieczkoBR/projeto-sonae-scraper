@@ -1,8 +1,9 @@
 from cryptography.fernet import Fernet
 import os
 
-# Nome do arquivo onde guardaremos a chave secreta
-ARQUIVO_CHAVE = "secret.key"
+# Caminho ABSOLUTO para a chave na raiz do projeto
+RAIZ_PROJETO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ARQUIVO_CHAVE = os.path.join(RAIZ_PROJETO, "secret.key")
 
 def carregar_chave():
     """
@@ -12,7 +13,8 @@ def carregar_chave():
         chave = Fernet.generate_key()
         with open(ARQUIVO_CHAVE, "wb") as key_file:
             key_file.write(chave)
-        print("⚠️ NOVA CHAVE DE SEGURANÇA GERADA! Não perca o arquivo 'secret.key'.")
+        print(f"NOVA CHAVE DE SEGURANÇA GERADA em: {ARQUIVO_CHAVE}")
+        print("   Não perca este arquivo!")
     else:
         with open(ARQUIVO_CHAVE, "rb") as key_file:
             chave = key_file.read()
