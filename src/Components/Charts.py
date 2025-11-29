@@ -7,15 +7,15 @@ def get_status_info(status):
     status_lower = str(status).lower()
     
     if "atrasado" in status_lower or "crítico" in status_lower:
-        return "🔴", "#ef4444", "Atrasado"
+        return "●", "#ef4444", "Atrasado"
     elif "concluído" in status_lower or "concluido" in status_lower:
-        return "🟢", "#10b981", "Concluído"
+        return "●", "#10b981", "Concluído"
     elif "em andamento" in status_lower or "andamento" in status_lower:
-        return "🟡", "#f59e0b", "Em Andamento"
+        return "●", "#f59e0b", "Em Andamento"
     elif "no prazo" in status_lower:
-        return "🔵", "#3b82f6", "No Prazo"
+        return "●", "#3b82f6", "No Prazo"
     else:
-        return "⚪️", "#6b7280", str(status)
+        return "●", "#6b7280", str(status)
 
 def criar_grafico_status(df):
     """Cria gráfico de pizza para distribuição de status"""

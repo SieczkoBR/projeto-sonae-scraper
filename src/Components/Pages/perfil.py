@@ -84,7 +84,6 @@ def render_perfil_page():
                 
                 if sucesso:
                     st.success(mensagem)
-                    st.balloons()
                 else:
                     st.error(mensagem)
     

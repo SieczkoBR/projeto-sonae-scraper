@@ -89,7 +89,6 @@ def render_login_page():
                         st.session_state.permissoes = auth.obter_permissoes_usuario(usuario['id'])
                         
                         st.success(f"Bem-vindo, {usuario['nome_completo']}!")
-                        st.balloons()
                         st.rerun()
                     else:
                         st.error("Usuário ou senha incorretos!")

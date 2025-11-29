@@ -63,7 +63,7 @@ def render_admin_usuarios_page():
     st.subheader(f"Usuários Encontrados: {len(usuarios_filtrados)}")
     
     for user in usuarios_filtrados:
-        with st.expander(f"👤 {user.get('nome_completo', 'N/A')} (@{user.get('username', 'N/A')})"):
+        with st.expander(f"{user.get('nome_completo', 'N/A')} (@{user.get('username', 'N/A')})"):
             col_info, col_actions = st.columns([2, 1])
             
             with col_info:
@@ -71,7 +71,7 @@ def render_admin_usuarios_page():
                 st.text(f"ID: {user.get('id')}")
                 st.text(f"Email: {user.get('email', 'N/A')}")
                 st.text(f"Cargo: {user.get('cargo', 'N/A').upper()}")
-                st.text(f"Status: {'✅ Ativo' if user.get('ativo') else '❌ Inativo'}")
+                st.text(f"Status: {'Ativo' if user.get('ativo') else 'Inativo'}")
                 
                 if user.get('data_criacao'):
                     st.text(f"Criado em: {user['data_criacao']}")
@@ -90,7 +90,7 @@ def render_admin_usuarios_page():
                     key=f"cargo_{user['id']}"
                 )
                 
-                if st.button("💾 Salvar Cargo", key=f"salvar_cargo_{user['id']}", width="stretch"):
+                if st.button("Salvar Cargo", key=f"salvar_cargo_{user['id']}", width="stretch"):
                     if alterar_cargo_usuario(user['id'], novo_cargo):
                         st.success(f"Cargo alterado para {novo_cargo}")
                         st.rerun()
@@ -101,14 +101,14 @@ def render_admin_usuarios_page():
                 
                 # Ativar/Desativar
                 if user.get('ativo'):
-                    if st.button("🚫 Desativar", key=f"desativar_{user['id']}", width="stretch"):
+                    if st.button("Desativar", key=f"desativar_{user['id']}", width="stretch"):
                         if alterar_status_usuario(user['id'], 0):
                             st.success("Usuário desativado")
                             st.rerun()
                         else:
                             st.error("Erro ao desativar")
                 else:
-                    if st.button("✅ Ativar", key=f"ativar_{user['id']}", type="primary", width="stretch"):
+                    if st.button("Ativar", key=f"ativar_{user['id']}", type="primary", width="stretch"):
                         if alterar_status_usuario(user['id'], 1):
                             st.success("Usuário ativado")
                             st.rerun()
@@ -119,7 +119,7 @@ def render_admin_usuarios_page():
                 
                 # Excluir usuário
                 if user.get('username') != 'admin':  # Proteger conta admin
-                    if st.button("🗑️ Excluir", key=f"excluir_{user['id']}", width="stretch"):
+                    if st.button("Excluir", key=f"excluir_{user['id']}", width="stretch"):
                         st.session_state[f'confirmar_exclusao_{user["id"]}'] = True
                     
                     if st.session_state.get(f'confirmar_exclusao_{user["id"]}', False):

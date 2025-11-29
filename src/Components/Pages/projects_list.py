@@ -60,10 +60,10 @@ def render_projects_list_page(df_projetos):
     colunas_disponiveis = [col for col in colunas_exibir if col in df_display.columns]
     
     config_colunas = {
-        "nome_projeto": st.column_config.TextColumn("📁 Projeto", width="large"),
-        "Status Visual": st.column_config.TextColumn("🎯 Status", width="medium"),
-        "responsavel": st.column_config.TextColumn("👤 Responsável", width="medium"),
-        "data_ultima_atualizacao": st.column_config.TextColumn("📅 Última Atualização", width="medium")
+        "nome_projeto": st.column_config.TextColumn("Projeto", width="large"),
+        "Status Visual": st.column_config.TextColumn("Status", width="medium"),
+        "responsavel": st.column_config.TextColumn("Responsável", width="medium"),
+        "data_ultima_atualizacao": st.column_config.TextColumn("Última Atualização", width="medium")
     }
     
     st.dataframe(
@@ -77,7 +77,7 @@ def render_projects_list_page(df_projetos):
     # Botão para baixar dados
     csv = df_filtrado.to_csv(index=False).encode('utf-8')
     st.download_button(
-        label="📥 Baixar dados como CSV",
+        label="Baixar dados como CSV",
         data=csv,
         file_name=f"projetos_sonae_{datetime.now().strftime('%Y%m%d')}.csv",
         mime="text/csv"

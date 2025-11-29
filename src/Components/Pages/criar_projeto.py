@@ -106,7 +106,6 @@ def render_criar_projeto_manual():
                 
                 if sucesso:
                     st.success(mensagem)
-                    st.balloons()
                     st.info("Redirecionando...")
                     import time
                     time.sleep(2)

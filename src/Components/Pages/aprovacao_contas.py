@@ -3,7 +3,7 @@ from Auth.autenticacao import AuthManager
 
 def render_aprovacao_contas_page():
     """Página para aprovar/negar solicitações de conta"""
-    st.title("✅ Aprovar Solicitações de Conta")
+    st.title("Aprovar Solicitações de Conta")
     
     cargo = st.session_state.get('cargo', '')
     
@@ -15,13 +15,13 @@ def render_aprovacao_contas_page():
     solicitacoes = auth.listar_solicitacoes_pendentes()
     
     if not solicitacoes:
-        st.success("Não há solicitações pendentes no momento! 🎉")
+        st.success("Não há solicitações pendentes no momento!")
         return
     
     st.info(f"Você tem **{len(solicitacoes)}** solicitações pendentes")
     
     for sol in solicitacoes:
-        with st.expander(f"📋 {sol['nome_completo']} (@{sol['username']})"):
+        with st.expander(f"{sol['nome_completo']} (@{sol['username']})"):
             col1, col2 = st.columns([2, 1])
             
             with col1:
@@ -37,23 +37,20 @@ def render_aprovacao_contas_page():
             with col2:
                 st.markdown("**Ações:**")
                 
-                if st.button(f"✅ Aprovar", key=f"aprovar_{sol['id']}", type="primary"):
-                    sucesso, msg = auth.aprovar_solicitacao(
+                if st.button(f"Aprovar", key=f"aprovar_{sol['id']}", type="primary"):
+                    sucesso = auth.aprovar_solicitacao(
                         sol['id'],
-                        sol['username'],
-                        sol['email'],
-                        sol['senha_hash'],
-                        sol['nome_completo'],
+                        st.session_state.get('user_id'),
                         sol['cargo_solicitado']
                     )
                     
                     if sucesso:
-                        st.success(msg)
+                        st.success("Conta aprovada com sucesso!")
                         st.rerun()
                     else:
-                        st.error(msg)
+                        st.error("Erro ao aprovar solicitação")
                 
-                if st.button(f"❌ Negar", key=f"negar_{sol['id']}"):
+                if st.button(f"Negar", key=f"negar_{sol['id']}"):
                     sucesso = auth.negar_solicitacao(
                         sol['id'],
                         st.session_state.get('user_id')

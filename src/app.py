@@ -24,7 +24,6 @@ from Components.Pages.gerenciar_projetos import render_gerenciar_projetos_page
 # --- Configuração da Página ---
 st.set_page_config(
     page_title="Dashboard MC Sonae",
-    page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -60,7 +59,7 @@ else:
     elif pagina == "Insights de IA":
         render_ai_insights_page(df_filtrado)
 
-    elif pagina == "Relatório Executivo IA":
+    elif pagina == "Relatório Automatizado":
         render_custom_summary_page()
     
     elif pagina == "Criar Projeto":

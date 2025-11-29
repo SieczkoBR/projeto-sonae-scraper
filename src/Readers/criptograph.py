@@ -13,7 +13,7 @@ def carregar_chave():
         chave = Fernet.generate_key()
         with open(ARQUIVO_CHAVE, "wb") as key_file:
             key_file.write(chave)
-        print(f"⚠️ NOVA CHAVE DE SEGURANÇA GERADA em: {ARQUIVO_CHAVE}")
+        print(f"NOVA CHAVE DE SEGURANÇA GERADA em: {ARQUIVO_CHAVE}")
         print("   Não perca este arquivo!")
     else:
         with open(ARQUIVO_CHAVE, "rb") as key_file:

@@ -16,13 +16,13 @@ def render_aprovacao_mudanca_cargo_page():
     solicitacoes = listar_mudancas_pendentes()
     
     if not solicitacoes:
-        st.success("Não há solicitações de mudança de cargo pendentes! 🎉")
+        st.success("Não há solicitações de mudança de cargo pendentes!")
         return
     
     st.info(f"Você tem **{len(solicitacoes)}** solicitações pendentes")
     
     for sol in solicitacoes:
-        with st.expander(f"🔄 {sol['nome_completo']} (@{sol['username']}) - {sol['cargo_atual']} → {sol['cargo_solicitado']}"):
+        with st.expander(f"{sol['nome_completo']} (@{sol['username']}) - {sol['cargo_atual']} → {sol['cargo_solicitado']}"):
             col1, col2 = st.columns([2, 1])
             
             with col1:
@@ -39,10 +39,9 @@ def render_aprovacao_mudanca_cargo_page():
                 st.markdown("**Ações:**")
                 
                 # Aprovar
-                if st.button(f"✅ Aprovar", key=f"aprovar_{sol['id']}", type="primary", width="stretch"):
+                if st.button(f"Aprovar", key=f"aprovar_{sol['id']}", type="primary", width="stretch"):
                     if aprovar_mudanca_cargo(sol['usuario_id'], sol['cargo_solicitado'], sol['id']):
                         st.success(f"Cargo de {sol['nome_completo']} alterado para {sol['cargo_solicitado']}!")
-                        st.balloons()
                         st.rerun()
                     else:
                         st.error("Erro ao aprovar mudança")
@@ -55,7 +54,7 @@ def render_aprovacao_mudanca_cargo_page():
                         key=f"motivo_{sol['id']}"
                     )
                     
-                    if st.form_submit_button("❌ Negar", width="stretch"):
+                    if st.form_submit_button("Negar", width="stretch"):
                         if negar_mudanca_cargo(sol['id'], motivo):
                             st.success("Solicitação negada")
                             st.rerun()

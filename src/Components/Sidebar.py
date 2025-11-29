@@ -34,7 +34,7 @@ def carregar_dados():
         
         return df
     except Exception as e:
-        st.error(f"❌ Erro ao carregar dados: {e}")
+        st.error(f"Erro ao carregar dados: {e}")
         import traceback
         st.error(traceback.format_exc())
         return pd.DataFrame()
@@ -116,7 +116,7 @@ def render_sidebar():
                 "Lista de Projetos",
                 "Detalhes do Projeto",
                 "Insights de IA",
-                "Relatório Executivo IA",
+                "Relatório Automatizado",
                 "Perfil"
             ],
             'gestor': [
@@ -124,7 +124,7 @@ def render_sidebar():
                 "Lista de Projetos",
                 "Detalhes do Projeto",
                 "Insights de IA",
-                "Relatório Executivo IA",
+                "Relatório Automatizado",
                 "Criar Projeto",
                 "Gerenciar Projetos",
                 "Perfil"
@@ -143,26 +143,8 @@ def render_sidebar():
             ]
         }
         
-        # Ícones para cada página
-        icones = {
-            "Dashboard Geral": "📊",
-            "Lista de Projetos": "📋",
-            "Detalhes do Projeto": "🔍",
-            "Insights de IA": "🤖",
-            "Relatório Executivo IA": "📊",
-            "Criar Projeto": "➕",
-            "Gerenciar Projetos": "⚙️",
-            "Administrar Usuários": "👥",
-            "Aprovar Contas": "✅",
-            "Aprovar Mudança de Cargo": "🔄",
-            "Perfil": "👤"
-        }
-        
         # Obter páginas permitidas para o cargo
         paginas_permitidas = paginas_por_cargo.get(cargo, paginas_por_cargo['visualizador'])
-        
-        # Criar opções com ícones
-        opcoes_paginas = [f"{icones.get(p, '📄')} {p}" for p in paginas_permitidas]
         
         # Verificar notificações (apenas para admin)
         if cargo == 'admin':
@@ -174,7 +156,7 @@ def render_sidebar():
         
         pagina = st.radio(
             "Escolha uma página:",
-            opcoes_paginas,
+            paginas_permitidas,
             key="pagina_radio"
         )
         
@@ -195,7 +177,7 @@ def render_sidebar():
         </style>
         """, unsafe_allow_html=True)
         
-        if st.button("🔄 Atualizar Dados", type="secondary", width="stretch", key="refresh_btn"):
+        if st.button("Atualizar Dados", type="secondary", width="stretch", key="refresh_btn"):
             st.cache_data.clear()
             st.rerun()
         
@@ -215,12 +197,9 @@ def render_sidebar():
         </style>
         """, unsafe_allow_html=True)
         
-        if st.button("🚪 Sair do Sistema", type="primary", width="stretch", key="logout_bottom_btn"):
+        if st.button("Sair do Sistema", type="primary", width="stretch", key="logout_bottom_btn"):
             logout()
-        
-        # Remover ícone da página selecionada
-        pagina_sem_icone = pagina.split(' ', 1)[1] if ' ' in pagina else pagina
         
         df_projetos = carregar_dados()
         
-        return pagina_sem_icone, df_projetos
+        return pagina, df_projetos

@@ -419,13 +419,13 @@ def _formatar_relatorio(texto, conteudo_original):
     dados_extraidos = _extrair_dados_contextualizados(conteudo_original)
     
     # Estruturar relatório
-    relatorio = f"""## 📋 Análise do Documento
+    relatorio = f"""## Análise do Documento
 
 {texto_formatado}
 
 ---
 
-## 📊 Dados e Informações Relevantes
+## Dados e Informações Relevantes
 
 """
     
@@ -442,7 +442,7 @@ def _formatar_relatorio(texto, conteudo_original):
     
     relatorio += """---
 
-## 💡 Insights Estratégicos
+## Insights Estratégicos
 
 Baseado na análise do documento:
 
@@ -452,7 +452,7 @@ Baseado na análise do documento:
 
 ---
 
-## 🎯 Próximas Ações Recomendadas
+## Próximas Ações Recomendadas
 
 1. Revisar dados e métricas apresentadas no documento
 2. Identificar prioridades e ações críticas
@@ -561,7 +561,7 @@ def _extrair_dados_contextualizados(texto):
         
         if valores:
             dados.append({
-                'categoria': '📈 Indicadores de Progresso',
+                'categoria': 'Indicadores de Progresso',
                 'descricao': 'Percentuais e métricas identificados no documento:',
                 'valores': valores
             })
@@ -618,7 +618,7 @@ def _extrair_dados_contextualizados(texto):
     
     if datas_encontradas and len(datas_encontradas) <= 10:  # Limitar para evitar lixo
         dados.append({
-            'categoria': '📅 Prazos e Datas',
+            'categoria': 'Prazos e Datas',
             'descricao': 'Datas identificadas no documento:',
             'valores': sorted(list(datas_encontradas))[:5]
         })
@@ -668,13 +668,13 @@ def _gerar_relatorio_basico(conteudo, prompt_personalizado):
     frases = conteudo.split('.')[:5]
     resumo_basico = '. '.join(frases) + '.'
     
-    relatorio = f"""# 📊 Relatório Executivo
+    relatorio = f"""# Relatório Executivo
 
-## 🎯 Resumo do Documento
+## Resumo do Documento
 
 {resumo_basico}
 
-## 🔍 Análise
+## Análise
 
 O documento apresenta informações relevantes que requerem análise detalhada. 
 Principais aspectos identificados:
@@ -686,7 +686,7 @@ Principais aspectos identificados:
 """
     
     if prompt_personalizado:
-        relatorio += f"""## 📌 Foco Solicitado
+        relatorio += f"""## Foco Solicitado
 
 {prompt_personalizado}
 

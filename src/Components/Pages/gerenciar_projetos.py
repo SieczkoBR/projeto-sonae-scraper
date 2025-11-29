@@ -146,7 +146,6 @@ def render_editar_projeto(projeto: dict):
             
             if sucesso:
                 st.success(msg)
-                st.balloons()
                 import time
                 time.sleep(1)
                 st.rerun()
@@ -181,7 +180,6 @@ def render_excluir_projeto(projeto: dict):
             sucesso, msg = excluir_projeto_db(projeto['id'])
             if sucesso:
                 st.success(msg)
-                st.balloons()
                 import time
                 time.sleep(2)
                 st.rerun()

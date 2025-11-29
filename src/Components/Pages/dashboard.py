@@ -60,10 +60,10 @@ def render_dashboard_page(df_projetos):
         if fig_timeline:
             st.plotly_chart(fig_timeline, use_container_width=True)
         else:
-            st.info("📅 Sem dados de timeline disponíveis")
+            st.info("Sem dados de timeline disponíveis")
     
     st.divider()
-    st.subheader("👥 Projetos por Responsável")
+    st.subheader("Projetos por Responsável")
     
     fig_resp = criar_grafico_responsaveis(df_filtrado)
     if fig_resp:

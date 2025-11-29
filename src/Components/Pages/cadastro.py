@@ -205,7 +205,6 @@ def render_cadastro_page():
                 if sucesso:
                     st.success("Solicitação enviada com sucesso!")
                     st.info("Aguarde a aprovação do administrador. Você receberá um email quando sua conta for aprovada.")
-                    st.balloons()
                     
                     # Voltar para login após alguns segundos
                     import time

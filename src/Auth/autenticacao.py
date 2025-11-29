@@ -145,6 +145,7 @@ class AuthManager:
                     'id': row['id'],
                     'username': row['username'],
                     'email': row['email'],
+                    'senha_hash': row['senha_hash'],
                     'nome_completo': row['nome_completo'],
                     'cargo_solicitado': row['cargo_solicitado'],
                     'mensagem_solicitacao': row['mensagem_solicitacao'],

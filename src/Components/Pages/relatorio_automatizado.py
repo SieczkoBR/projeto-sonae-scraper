@@ -12,11 +12,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 from Database.relatorios_db import RelatoriosDB
 
 def render_custom_summary_page():
-    """Renderiza a página de Criar Relatório Executivo Automático"""
-    st.title("📊 Gerador de Relatório Executivo com IA")
-    st.markdown("Envie um arquivo e nossa IA criará um **relatório executivo completo** com análise estratégica, insights e recomendações")
+    """Renderiza a página de Criar Relatório Automatizado"""
+    st.title("Gerador de Relatório Automatizado com IA")
+    st.markdown("Envie um arquivo e nossa IA criará um **relatório automatizado completo** com análise estratégica, insights e recomendações")
     
-    st.info("💡 A IA analisa profundamente o conteúdo e gera um relatório profissional com visão executiva, identificando objetivos, riscos, oportunidades e ações recomendadas.")
+    st.info("A IA analisa profundamente o conteúdo e gera um relatório profissional com visão executiva, identificando objetivos, riscos, oportunidades e ações recomendadas.")
     
     # Inicializar session_state para persistir o relatório
     if 'relatorio_atual' not in st.session_state:
@@ -69,12 +69,12 @@ def render_custom_summary_page():
     # Botão de processar
     col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
     with col_btn2:
-        processar = st.button("🤖 Gerar Relatório Executivo", type="primary", use_container_width=True)
+        processar = st.button("Gerar Relatório Executivo", type="primary", use_container_width=True)
     
     # Processamento
     if processar:
         if not uploaded_file:
-            st.error("❌ Por favor, selecione um arquivo primeiro!")
+            st.error("Por favor, selecione um arquivo primeiro!")
         else:
             _process_file(
                 uploaded_file, 
@@ -100,7 +100,7 @@ def render_custom_summary_page():
     
     # Seção de histórico
     st.divider()
-    st.subheader("📚 Histórico de Relatórios Gerados")
+    st.subheader("Histórico de Relatórios Gerados")
     
     with st.expander("Ver relatórios anteriores", expanded=False):
         # Buscar relatórios do banco de dados
@@ -116,7 +116,7 @@ def render_custom_summary_page():
                     "Arquivo": rel['arquivo_original'] if rel['arquivo_original'] else "N/A",
                     "Nome do Relatório": rel['nome_relatorio'],
                     "Tags": rel['tags'] if rel['tags'] else "",
-                    "Status": "✅ Disponível"
+                    "Status": "Disponível"
                 })
             
             df_historico = pd.DataFrame(dados_tabela)
@@ -135,11 +135,11 @@ def render_custom_summary_page():
                 
                 if relatorio_completo:
                     st.markdown("---")
-                    st.markdown(f"### 📄 {relatorio_completo['nome_relatorio']}")
-                    st.caption(f"📅 Criado em: {relatorio_completo['data_criacao']}")
+                    st.markdown(f"### {relatorio_completo['nome_relatorio']}")
+                    st.caption(f"Criado em: {relatorio_completo['data_criacao']}")
                     
                     if relatorio_completo['tags']:
-                        st.caption(f"🏷️ Tags: {relatorio_completo['tags']}")
+                        st.caption(f"Tags: {relatorio_completo['tags']}")
                     
                     st.markdown("---")
                     st.markdown(relatorio_completo['conteudo_relatorio'])
@@ -147,59 +147,59 @@ def render_custom_summary_page():
                     # Botão para deletar
                     col_del1, col_del2, col_del3 = st.columns([1, 1, 1])
                     with col_del2:
-                        if st.button("🗑️ Deletar este relatório", type="secondary", use_container_width=True, key=f"del_{rel_id}"):
+                        if st.button("Deletar este relatório", type="secondary", use_container_width=True, key=f"del_{rel_id}"):
                             if db.deletar_relatorio(rel_id):
-                                st.success("✅ Relatório deletado com sucesso!")
+                                st.success("Relatório deletado com sucesso!")
                                 st.rerun()
                             else:
-                                st.error("❌ Erro ao deletar relatório")
+                                st.error("Erro ao deletar relatório")
         else:
-            st.info("📭 Nenhum relatório salvo ainda. Gere e salve seu primeiro relatório!")
+            st.info("Nenhum relatório salvo ainda. Gere e salve seu primeiro relatório!")
 
 def _process_file(uploaded_file, prompt_personalizado, tamanho_resumo, incluir_insights, incluir_alertas, incluir_graficos=False):
     """Processa o arquivo e exibe relatório executivo com IA"""
     
     # Carregar modelo IA
-    with st.spinner("🔄 Carregando modelo de IA (primeira vez pode demorar alguns minutos)..."):
+    with st.spinner("Carregando modelo de IA (primeira vez pode demorar alguns minutos)..."):
         try:
             from AI.processador_ia import carregar_modelo, gerar_relatorio_executivo
             modelo = carregar_modelo()
             if modelo is None:
-                st.error("❌ Erro ao carregar modelo de IA.")
+                st.error("Erro ao carregar modelo de IA.")
                 return
         except Exception as e:
-            st.error(f"❌ Erro ao carregar modelo: {e}")
+            st.error(f"Erro ao carregar modelo: {e}")
             import traceback
             st.code(traceback.format_exc())
             return
     
     # Processar arquivo
-    with st.spinner("⚙️ Analisando arquivo e gerando relatório executivo..."):
+    with st.spinner("Analisando arquivo e gerando relatório executivo..."):
         progress_bar = st.progress(0)
         status_text = st.empty()
         
         try:
             # Etapas de processamento
-            status_text.text("📖 Extraindo conteúdo do arquivo...")
+            status_text.text("Extraindo conteúdo do arquivo...")
             progress_bar.progress(20)
             time.sleep(0.3)
             
             # Ler conteúdo do arquivo
             conteudo = _extrair_conteudo_arquivo(uploaded_file)
             if not conteudo:
-                st.error("❌ Não foi possível extrair conteúdo do arquivo")
+                st.error("Não foi possível extrair conteúdo do arquivo")
                 return
             
-            status_text.text("🧠 Analisando conteúdo com IA...")
+            status_text.text("Analisando conteúdo com IA...")
             progress_bar.progress(40)
             time.sleep(0.3)
             
             # Validar tamanho
             if len(conteudo.strip()) < 50:
-                st.error("❌ Arquivo muito pequeno para análise executiva (mínimo 50 caracteres)")
+                st.error("Arquivo muito pequeno para análise executiva (mínimo 50 caracteres)")
                 return
             
-            status_text.text("📊 Gerando relatório executivo...")
+            status_text.text("Gerando relatório executivo...")
             progress_bar.progress(60)
             
             # Gerar relatório usando FLAN-T5
@@ -212,10 +212,10 @@ def _process_file(uploaded_file, prompt_personalizado, tamanho_resumo, incluir_i
             )
             
             if not resultado or not resultado.get("texto"):
-                st.error("❌ Erro ao gerar relatório")
+                st.error("Erro ao gerar relatório")
                 return
             
-            status_text.text("✨ Finalizando formatação...")
+            status_text.text("Finalizando formatação...")
             progress_bar.progress(90)
             time.sleep(0.3)
             
@@ -238,7 +238,7 @@ def _process_file(uploaded_file, prompt_personalizado, tamanho_resumo, incluir_i
             st.rerun()
             
         except Exception as e:
-            st.error(f"❌ Erro ao processar arquivo: {e}")
+            st.error(f"Erro ao processar arquivo: {e}")
             import traceback
             st.code(traceback.format_exc())
             progress_bar.empty()
@@ -273,12 +273,12 @@ def _extrair_conteudo_arquivo(arquivo):
             return texto
             
     except Exception as e:
-        st.error(f"❌ Erro ao extrair conteúdo: {e}")
+        st.error(f"Erro ao extrair conteúdo: {e}")
         return None
 
 def _exibir_resultados(nome_arquivo, relatorio, conteudo_original, tamanho, insights, alertas, prompt, dados_graficos=None):
     """Exibe os resultados do relatório executivo"""
-    st.success("✅ Relatório executivo gerado com sucesso!")
+    st.success("Relatório executivo gerado com sucesso!")
     
     st.divider()
     
@@ -322,11 +322,11 @@ def _exibir_resultados(nome_arquivo, relatorio, conteudo_original, tamanho, insi
     </style>
     """, unsafe_allow_html=True)
     
-    st.info(f"📄 **Arquivo analisado:** {nome_arquivo}")
+    st.info(f"**Arquivo analisado:** {nome_arquivo}")
     
     st.divider()
     
-    tab1, tab2, tab3 = st.tabs(["📊 Relatório Executivo", "📖 Documento Original", "⚙️ Configurações"])
+    tab1, tab2, tab3 = st.tabs(["Relatório Executivo", "Documento Original", "Configurações"])
     
     with tab1:
         st.markdown('<div class="relatorio-container">', unsafe_allow_html=True)
@@ -336,7 +336,7 @@ def _exibir_resultados(nome_arquivo, relatorio, conteudo_original, tamanho, insi
         # Gráficos removidos
         if False and dados_graficos:
             st.divider()
-            st.markdown("## 📈 Visualizações de Dados")
+            st.markdown("## Visualizações de Dados")
             
             import plotly.graph_objects as go
             
@@ -428,7 +428,7 @@ def _exibir_resultados(nome_arquivo, relatorio, conteudo_original, tamanho, insi
         
         with col_download1:
             st.download_button(
-                label="💾 Baixar Relatório (TXT)",
+                label="Baixar Relatório (TXT)",
                 data=relatorio,
                 file_name=f"relatorio_executivo_{nome_arquivo.split('.')[0]}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
                 mime="text/plain",
@@ -437,7 +437,7 @@ def _exibir_resultados(nome_arquivo, relatorio, conteudo_original, tamanho, insi
         
         with col_download2:
             st.download_button(
-                label="📄 Baixar Relatório (MD)",
+                label="Baixar Relatório (MD)",
                 data=relatorio,
                 file_name=f"relatorio_executivo_{nome_arquivo.split('.')[0]}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md",
                 mime="text/markdown",
@@ -445,21 +445,21 @@ def _exibir_resultados(nome_arquivo, relatorio, conteudo_original, tamanho, insi
             )
     
     with tab2:
-        st.markdown("### 📄 Conteúdo Original do Documento")
+        st.markdown("### Conteúdo Original do Documento")
         preview = conteudo_original[:2000] + "..." if len(conteudo_original) > 2000 else conteudo_original
         st.text_area("Prévia do documento", value=preview, height=400, disabled=True, label_visibility="collapsed")
         st.caption(f"Mostrando primeiros 2000 caracteres de {len(conteudo_original)} totais")
     
     with tab3:
-        st.markdown("### ⚙️ Configurações Aplicadas")
+        st.markdown("### Configurações Aplicadas")
         
         config_df = pd.DataFrame({
             "Configuração": ["Nível de Detalhe", "Insights Estratégicos", "Alertas e Riscos", "Personalização", "Modelo IA"],
             "Valor": [
                 tamanho,
-                "✅ Sim" if insights else "❌ Não",
-                "✅ Sim" if alertas else "❌ Não",
-                "✅ Sim" if prompt else "❌ Não",
+                "Sim" if insights else "Não",
+                "Sim" if alertas else "Não",
+                "Sim" if prompt else "Não",
                 "FLAN-T5 Base"
             ]
         })
@@ -472,7 +472,7 @@ def _exibir_resultados(nome_arquivo, relatorio, conteudo_original, tamanho, insi
     
     st.divider()
     
-    st.subheader("💾 Salvar Relatório")
+    st.subheader("Salvar Relatório")
     
     col_save1, col_save2 = st.columns(2)
     
@@ -493,7 +493,7 @@ def _exibir_resultados(nome_arquivo, relatorio, conteudo_original, tamanho, insi
     col_btn_save, col_btn_clear = st.columns(2)
     
     with col_btn_save:
-        if st.button("💾 Salvar no Histórico", use_container_width=True, type="primary", key=f"btn_salvar_{id(nome_arquivo)}"):
+        if st.button("Salvar no Histórico", use_container_width=True, type="primary", key=f"btn_salvar_{id(nome_arquivo)}"):
             if nome_relatorio.strip():
                 db = RelatoriosDB()
                 sucesso = db.salvar_relatorio(
@@ -507,14 +507,13 @@ def _exibir_resultados(nome_arquivo, relatorio, conteudo_original, tamanho, insi
                 )
                 
                 if sucesso:
-                    st.success(f"✅ Relatório '{nome_relatorio}' salvo com sucesso!")
-                    st.balloons()
+                    st.success(f"Relatório '{nome_relatorio}' salvo com sucesso!")
                 else:
-                    st.error("❌ Erro ao salvar relatório no banco de dados")
+                    st.error("Erro ao salvar relatório no banco de dados")
             else:
-                st.warning("⚠️ Por favor, forneça um nome para o relatório")
+                st.warning("Por favor, forneça um nome para o relatório")
     
     with col_btn_clear:
-        if st.button("🗑️ Novo Relatório", use_container_width=True, type="secondary", key=f"btn_clear_{id(nome_arquivo)}"):
+        if st.button("Novo Relatório", use_container_width=True, type="secondary", key=f"btn_clear_{id(nome_arquivo)}"):
             st.session_state.relatorio_atual = None
             st.rerun()
