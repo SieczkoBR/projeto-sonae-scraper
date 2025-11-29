@@ -44,7 +44,7 @@ elif pagina == "🔍 Detalhes do Projeto":
 elif pagina == "🤖 Insights de IA":
     render_ai_insights_page(df_filtrado)
 
-elif pagina == "📄 Criar Resumo Personalizado":
+elif pagina == "📊 Relatório Executivo IA":
     render_custom_summary_page()
 
 # --- Footer ---

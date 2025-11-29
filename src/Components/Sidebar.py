@@ -51,7 +51,7 @@ def render_sidebar():
                 "📋 Lista de Projetos",
                 "🔍 Detalhes do Projeto",
                 "🤖 Insights de IA",
-                "📄 Criar Resumo Personalizado"
+                "📊 Relatório Executivo IA"
             ],
             key="pagina_radio"  # Key único para evitar duplicatas
         )
