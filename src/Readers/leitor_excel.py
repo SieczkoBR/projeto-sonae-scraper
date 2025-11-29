@@ -3,7 +3,7 @@ import sqlite3
 import os
 import sys
 # Importamos a função de segurança
-from criptograph import encriptar_dado
+from Readers.criptograph import encriptar_dado
 
 # Adicionar path para importar processador de IA
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
@@ -11,6 +11,34 @@ from AI.processador_ia import gerar_insight_para_projeto
 
 CAMINHO_ARQUIVO_EXCEL = "data/relatorios_sonae.xlsx"
 CAMINHO_BANCO = "data/projetos_sonae.db"
+
+
+def ler_excel(caminho_arquivo):
+    """
+    Lê um arquivo Excel e retorna todo o texto extraído.
+    
+    Args:
+        caminho_arquivo: Caminho para o arquivo Excel (.xlsx, .xls)
+        
+    Returns:
+        String contendo todo o conteúdo do Excel formatado
+    """
+    try:
+        # Ler todas as planilhas
+        excel_file = pd.ExcelFile(caminho_arquivo)
+        texto_completo = ""
+        
+        for sheet_name in excel_file.sheet_names:
+            df = pd.read_excel(caminho_arquivo, sheet_name=sheet_name)
+            texto_completo += f"\n=== Planilha: {sheet_name} ===\n"
+            texto_completo += df.to_string() + "\n"
+        
+        return texto_completo
+        
+    except Exception as e:
+        print(f"Erro ao ler Excel: {e}")
+        return None
+
 
 def processar_dados_excel():
     conexao = None

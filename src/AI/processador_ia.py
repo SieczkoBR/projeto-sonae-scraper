@@ -19,6 +19,83 @@ logging.basicConfig(
     ]
 )
 
+class ProcessadorIA:
+    """
+    Classe para processar informações de documentos usando IA.
+    Encapsula funcionalidades de extração e análise de texto.
+    """
+    
+    def __init__(self):
+        """Inicializa o processador de IA."""
+        self.modelo = None
+    
+    def carregar_modelo(self):
+        """Carrega o modelo FLAN-T5 para processamento."""
+        self.modelo = carregar_modelo()
+        return self.modelo
+    
+    def extrair_informacoes(self, texto):
+        """
+        Extrai informações estruturadas de um texto.
+        
+        Args:
+            texto (str): Texto para extrair informações
+            
+        Returns:
+            dict: Dicionário com informações extraídas
+        """
+        if not texto or len(texto.strip()) < 50:
+            return {
+                'nome': '',
+                'descricao': '',
+                'categoria': '',
+                'responsavel': '',
+                'orcamento': None,
+                'data_inicio': None,
+                'data_fim': None,
+                'tags': ''
+            }
+        
+        try:
+            # Extrai conceitos-chave para categorização
+            conceitos = extrair_conceitos_chave(texto, max_conceitos=3)
+            categoria = conceitos[0] if conceitos else ''
+            
+            # Extrai frase principal como nome do projeto
+            nome = extrair_frase_principal(texto)
+            if not nome:
+                nome = texto[:100].strip()
+            
+            # Gera descrição resumida
+            descricao = texto[:500].strip()
+            
+            # Tenta extrair informações estruturadas
+            dados = _extrair_dados_contextualizados(texto)
+            
+            return {
+                'nome': nome,
+                'descricao': descricao,
+                'categoria': categoria,
+                'responsavel': dados.get('responsavel', ''),
+                'orcamento': dados.get('orcamento'),
+                'data_inicio': dados.get('data_inicio'),
+                'data_fim': dados.get('data_fim'),
+                'tags': ', '.join(conceitos) if conceitos else ''
+            }
+            
+        except Exception as e:
+            logging.error(f"Erro ao extrair informações: {e}")
+            return {
+                'nome': texto[:100].strip() if texto else '',
+                'descricao': texto[:500].strip() if texto else '',
+                'categoria': '',
+                'responsavel': '',
+                'orcamento': None,
+                'data_inicio': None,
+                'data_fim': None,
+                'tags': ''
+            }
+
 def carregar_modelo():
     """
     Carrega o modelo FLAN-T5 para geração de texto.

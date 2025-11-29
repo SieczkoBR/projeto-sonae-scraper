@@ -3,7 +3,7 @@ import sqlite3
 import os
 import sys
 # Importamos a função de segurança
-from criptograph import encriptar_dado
+from Readers.criptograph import encriptar_dado
 
 # Adicionar path para importar processador de IA
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
@@ -11,6 +11,32 @@ from AI.processador_ia import gerar_insight_para_projeto
 
 CAMINHO_ARQUIVO_PDF = "data/relatorio_riscos.pdf"
 CAMINHO_BANCO = "data/projetos_sonae.db"
+
+
+def ler_pdf(caminho_arquivo):
+    """
+    Lê um arquivo PDF e retorna todo o texto extraído.
+    
+    Args:
+        caminho_arquivo: Caminho para o arquivo PDF
+        
+    Returns:
+        String contendo todo o texto do PDF
+    """
+    try:
+        documento = fitz.open(caminho_arquivo)
+        texto_completo = ""
+        
+        for pagina in documento:
+            texto_completo += pagina.get_text()
+        
+        documento.close()
+        return texto_completo
+        
+    except Exception as e:
+        print(f"Erro ao ler PDF: {e}")
+        return None
+
 
 def extrair_valor(texto_completo, marcador):
     try:
